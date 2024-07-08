@@ -21,66 +21,63 @@ const apiURL = 'https://career-shift-ac22110a7f97.herokuapp.com';
 function App() {
   const [careers, setCareers] = useState([]);
   const [coaches, setCoaches] = useState([]);
-  const [setError] = useState(null);
 
   //functions
   const getCareers = async () => {
-    try {
-      const response = await fetch(apiURL + '/careers/');
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-      console.log(data);
-      setCareers(data);
-    } catch (error) {
-      console.error("Error fetching careers:", error);
-      setError(error.message);
-    }
+    const response = await fetch(apiURL + '/careers/');
+    const data = await response.json();
+    console.log(data);
+    setCareers(data);
   };
 
   const getCoaches = async () => {
-    try {
-      const response = await fetch(apiURL + '/coaches/');
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-      console.log(data);
-      setCoaches(data);
-    } catch (error) {
-      console.error("Error fetching coaches:", error);
-      setError(error.message);
-    }
+    const response = await fetch(apiURL + '/coaches/');
+    const data = await response.json();
+    console.log(data);
+    setCoaches(data);
   };
 
   const handleFormSubmission = async (data, type) => {
-    try {
-      const response = await fetch(`${apiURL}/careers/${type === 'new' ? '' : `${data.id}/`}`, {
-        method: type === 'new' ? 'POST' : 'PUT',
+    if (type === 'new') {
+      await fetch(`${apiURL}/careers/`, {
+        method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error('Network response was not ok');
       getCareers();
-    } catch (error) {
-      console.error(`Error ${type === 'new' ? 'creating' : 'updating'} career:`, error);
-      setError(error.message);
+    } else {
+      await fetch(`${apiURL}/careers/${data.id}/`, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      getCareers();
     }
   };
 
   const handleCoachFormSubmission = async (data, type) => {
-    try {
-      const response = await fetch(`${apiURL}/coaches/${type === 'new' ? '' : `${data.id}/`}`, {
-        method: type === 'new' ? 'POST' : 'PUT',
+    if (type === 'new') {
+      await fetch(`${apiURL}/coaches/`, {
+        method: 'post',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
-      if (!response.ok) throw new Error('Network response was not ok');
       getCoaches();
-    } catch (error) {
-      console.error(`Error ${type === 'new' ? 'creating' : 'updating'} coach:`, error);
-      setError(error.message);
+    } else {
+      await fetch(`${apiURL}/coaches/${data.id}/`, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      getCoaches();
     }
   };
 
